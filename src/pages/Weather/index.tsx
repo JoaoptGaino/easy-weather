@@ -10,13 +10,12 @@ import api from '../../Services/api';
 
 export default function Weather() {
     const [city, setCity] = useState('');
-    useEffect(()=>{
-        api.get('?q=London&appid=0b177100caf71a656b93bfd11c06f133')
-        .then(response=>{
-            console.log(response.data.main.temp);
-            console.log(response.data.weather.main);
-        })
-    })
+    async function handleSearch(){
+        const response = await api.get(`?q=${city}&appid=0b177100caf71a656b93bfd11c06f133`)
+        
+
+        console.log(response.data.main.temp);
+    }
     return (
         <>
             <PageHeader title="Weather" navigation="Home" />
@@ -31,7 +30,7 @@ export default function Weather() {
                             value={city}
                             onChangeText={setCity}
                         />
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={handleSearch}>
                             <View style={styles.buttonIcon}>
                                 <Icon name="search" />
                             </View>
