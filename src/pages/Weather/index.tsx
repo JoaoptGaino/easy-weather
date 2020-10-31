@@ -6,16 +6,26 @@ import { useNavigation } from '@react-navigation/native';
 import PageHeader from '../../components/PageHeader';
 import { TextInput } from 'react-native-gesture-handler';
 import api from '../../Services/api';
+import { AppLoading } from 'expo';
 
 
 export default function Weather() {
     const [city, setCity] = useState('');
-    async function handleSearch(){
-        const response = await api.get(`?q=${city}&appid=0b177100caf71a656b93bfd11c06f133`)
-        
-
-        console.log(response.data.main.temp);
+    const [err, setErr] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [temp, setTemp] = useState('');
+    async function handleSearch() {
+        setLoading(true);
+        await api.get(`?q=${city}&appid=0b177100caf71a656b93bfd11c06f133`)
+            .then(response => {
+                setTemp(response.data.main.temp);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log(`Não achei ${err}`);
+            });
     }
+
     return (
         <>
             <PageHeader title="Weather" navigation="Home" />
@@ -35,6 +45,9 @@ export default function Weather() {
                                 <Icon name="search" />
                             </View>
                         </TouchableOpacity>
+                    </View>
+                    <View>
+                        {loading ? <Text>Loading</Text> : <Text>{temp}</Text>}
                     </View>
                 </View>
             </KeyboardAvoidingView>
